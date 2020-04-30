@@ -8,10 +8,9 @@ from typing import Dict, Union, Optional, NamedTuple
 _conf = ConfigParser()
 _conf.read("app.ini")
 # TODO read env value from environment variable
-env = "production"
-NULL_ENCODING_KEY = _conf[env]["null_encoding_key"]
-DATE_FORMAT = _conf[env]["date_format"]
-DAILY_SPEND = float(_conf[env]["average_daily_user_spend"])
+NULL_ENCODING_KEY = _conf["production"]["null_encoding_key"]
+DATE_FORMAT = _conf["production"]["date_format"]
+DAILY_SPEND = float(_conf["production"]["average_daily_user_spend"])
 
 
 def _as_dict(encoding: str) -> Dict[str, float]:

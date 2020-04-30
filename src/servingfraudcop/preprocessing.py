@@ -39,13 +39,11 @@ class Features(NamedTuple):
 
 
 class Example(NamedTuple):
-    trans_id: int
     date: int
     amount: Decimal  # demo standardization
     type: Optional[str] = None
     a4: Optional[int] = None  # demo imput mean
     card_issued: Optional[str] = None
-    features: Optional[Features] = None
 
 
 def _date(s: str) -> date:
@@ -64,13 +62,13 @@ def _card_age(card_issued: str, txn_date: date) -> int:
     return (txn_date - card_date).days
 
 
-def preprocess(example: Example) -> Example:
+def preprocess(example: Example) -> Features:
     d = _date(str(example.date))
     card_age = None
     if example.card_issued is not None:
         card_age = _card_age(card_issued=example.card_issued, txn_date=d)
     _type = example.type if example.type is not None else NULL_ENCODING_KEY
-    features = Features(
+    return Features(
         date_day_of_week=d.isoweekday(),
         date_week_number=d.isocalendar()[1],
         type=TYPE_ENCODING[_type],
@@ -82,13 +80,4 @@ def preprocess(example: Example) -> Example:
         card_age=_standard_scale(
             card_age, CARD_AGE_STATS["mean"], CARD_AGE_STATS["std"]
         ),
-    )
-    return Example(
-        trans_id=example.trans_id,
-        date=example.date,
-        type=example.type,
-        amount=example.amount,
-        a4=example.a4,
-        card_issued=example.card_issued,
-        features=features,
     )
